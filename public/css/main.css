@@ -1,3 +1,29 @@
 body {
-    background-color: grey;
+    background-color: lightgrey;
+    margin: 0;
+}
+
+form.logoutbtn {
+    display: inline;
+}
+
+div.wrapper {
+    margin: 0px 20vw 0px 20vw;
+    background-color: white;
+    /* padding: 10px; */
+    display: grid;
+}
+
+div.main {
+    padding: 20px;
+}
+
+form {
+    margin: 10px 0px 10px 0px;
+}
+
+header {
+    height: 100px;
+    background-color: lightblue;
+    padding: 10px;
 }
