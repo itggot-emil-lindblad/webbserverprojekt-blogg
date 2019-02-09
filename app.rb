@@ -31,10 +31,6 @@ get('/newuser') do
     slim(:register)
 end
 
-#if aklsjdklasd
-    #before do
-
-
 post('/login') do
     db = SQLite3::Database.new("db/blog.db")
     db.results_as_hash = true
@@ -84,5 +80,9 @@ post('/register') do
 	end
     session[:name] = params["name"]
     session[:username] = params["username"]
-    redirect('/welcome')
+    redirect('/')
+end
+
+get('/myprofile') do
+    slim(:myprofile)
 end

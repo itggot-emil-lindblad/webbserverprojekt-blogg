@@ -57,3 +57,7 @@ header {
     background-color: lightblue;
     padding: 10px;
 }
+
+form.register input {
+    margin: 10px;
+}
