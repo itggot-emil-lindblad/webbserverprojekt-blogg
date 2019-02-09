@@ -18,6 +18,11 @@ div.main {
     grid-template-columns: 10vw repeat(2,1fr);
     grid-template-rows: auto;
     grid-column-gap: 10px;
+    grid-row-gap: 10px; 
+}
+
+div.loggedininfo a {
+    margin-right: 5px;
 }
 div.login {
     grid-column: 1/3;
@@ -25,6 +30,7 @@ div.login {
 div.sidebar {
     grid-column: 1;
     height: 100vh;
+    background-color: white;
 }
 
 div.publicposts {
@@ -33,7 +39,7 @@ div.publicposts {
 }
 
 article {
-    margin: 10px 0px 10px 0px;
+    margin: 30px 0px 30px 0px;
     background-color: white;
     padding: 20px;
 }
@@ -47,7 +53,7 @@ form {
 }
 
 header {
-    height: 100px;
+    height: auto;
     background-color: lightblue;
     padding: 10px;
 }

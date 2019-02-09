@@ -44,7 +44,7 @@ post('/login') do
     elsif checkpassword(params["password"],result[0]["Hash"]) == true
         session[:name] = result[0]["Displayname"]
         session[:username] = params["username"]
-        redirect('/welcome')
+        redirect('/')
     else
         redirect('/denied')
     end

@@ -12,23 +12,24 @@ html lang="en"
                 header
                     div.loggedininfo
                         a href="/" Home
-                        span    Current user: #{session[:username]} 
+                        a href="/myprofile" My profile
+                        span Current user: #{session[:username]} 
                         span
                             form.logoutbtn action="/logout" method="post"
                                 input type="submit" value="Logout"
                     h1 C00l blog
             - else
-                / div.login
-                /     form action="/login" method="post"
-                /         input type="text" placeholder="Gib usrname" name="username"
-                /         input type="password" placeholder="Password pls" name="password"
-                /         input type="submit" value="Login"
-                /     a href="/newuser" 
-                /         button Register
                 header
                     div.notloggedin
                         a href="/" Home
                         span = ' Not logged in'
                     h1 C00l blog
+                    div.login
+                        form action="/login" method="post"
+                            input type="text" placeholder="Gib usrname" name="username"
+                            input type="password" placeholder="Password pls" name="password"
+                            input type="submit" value="Login"
+                        a href="/newuser" 
+                            button Register
             div.main
                 == yield
