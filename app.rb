@@ -84,5 +84,9 @@ post('/register') do
 end
 
 get('/myprofile') do
-    slim(:myprofile)
+    db = SQLite3::Database.new('db/blog.db')
+    db.results_as_hash = true
+    blogposts = db.execute("SELECT blog_title, blog_text FROM blogposts WHERE author_id = 2")
+    p blogposts
+    slim(:myprofile, locals:{blogposts: blogposts})
 end

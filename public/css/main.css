@@ -61,3 +61,12 @@ header {
 form.register input {
     margin: 10px;
 }
+
+div.myblogposts {
+    grid-column: span 3;
+    padding: 10px;  
+}
+
+article.blogpost {
+    background-color: white;
+}
