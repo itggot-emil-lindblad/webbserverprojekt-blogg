@@ -1,0 +1,7 @@
+-result.each do |element|
+    form action="/edit/#{element["id"]}/update" method="POST"
+        input name="blog_title" value="#{element["blog_title"]}" type="text"
+        input name="blog_text" value="#{element["blog_text"]}" type="text"
+        input type="submit" value="Update"
+        a href="/remove/#{element["id"]}"
+                    i.material-icons delete

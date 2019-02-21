@@ -2,7 +2,6 @@ require 'sinatra'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
-
 enable :sessions
 
 configure do
@@ -86,7 +85,30 @@ end
 get('/myprofile') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    blogposts = db.execute("SELECT blog_title, blog_text FROM blogposts WHERE author_id = 2")
+    blogposts = db.execute("SELECT id, blog_title, blog_text FROM blogposts WHERE author_id = 2")
     p blogposts
     slim(:myprofile, locals:{blogposts: blogposts})
+end
+
+get('/newpost') do
+    slim(:newpost)
+end
+
+post('/newpost') do
+    db = SQLite3::Database.new('db/blog.db')
+    db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id) VALUES (?,?,?)",params["blog_title"],params["blog_text"],2)
+    redirect('/myprofile')
+end
+
+get('/edit/:id') do 
+    db = SQLite3::Database.new('db/blog.db')
+    db.results_as_hash = true
+    result = db.execute("SELECT id, blog_title, blog_text FROM blogposts WHERE id = ?",params["id"])
+    slim(:editpost, locals:{result: result})
+end
+
+post('/edit/:id/update') do 
+    db = SQLite3::Database.new('db/blog.db')
+    db.execute("UPDATE blogposts SET blog_title = ?,blog_text = ? WHERE id = ?",params["blog_title"],params["blog_text"],params["id"])
+    redirect('/myprofile')
 end

@@ -4,9 +4,9 @@ a href="/newpost"
     - blogposts.each do |element|
         article.blogpost
             div.controls
-                a href="/edit"
+                a href="/edit/#{element["id"]}"
                     i.material-icons edit
-                a href=""
+                a href="/remove/#{element["id"]}"
                     i.material-icons delete
             h2 = element["blog_title"]
             p = element["blog_text"]
