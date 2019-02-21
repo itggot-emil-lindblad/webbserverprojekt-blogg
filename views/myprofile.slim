@@ -1,19 +1,5 @@
-/ .myblogposts
-/     article.blogpost
-/         div.controls
-/             a href="/edit"
-/                 i.material-icons edit
-/             a href=""
-/                 i.material-icons delete
-/         h2 = blogposts[0][0]
-/         p = blogposts[0][1]
-/     article.blogpost
-/         h2 = blogposts[0][0]
-/         p = blogposts[0][1]
-/     article.blogpost
-/         h2 = blogposts[0][0]
-/         p = blogposts[0][1]   
-
+a href="/newpost"
+    button New post
 .myblogposts
     - blogposts.each do |element|
         article.blogpost
