@@ -85,7 +85,7 @@ end
 get('/myprofile') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    blogposts = db.execute("SELECT id, blog_title, blog_text FROM blogposts WHERE author_id = 2")
+    blogposts = db.execute("SELECT id, blog_title, blog_text FROM blogposts WHERE author_id = 2 ORDER BY id DESC")
     p blogposts
     slim(:myprofile, locals:{blogposts: blogposts})
 end
@@ -110,5 +110,11 @@ end
 post('/edit/:id/update') do 
     db = SQLite3::Database.new('db/blog.db')
     db.execute("UPDATE blogposts SET blog_title = ?,blog_text = ? WHERE id = ?",params["blog_title"],params["blog_text"],params["id"])
+    redirect('/myprofile')
+end
+
+post('/:id/delete') do
+    db = SQLite3::Database.new("db/blog.db")
+    db.execute("DELETE FROM blogposts WHERE id = (?)", params["id"])
     redirect('/myprofile')
 end

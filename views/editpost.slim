@@ -3,5 +3,6 @@
         input name="blog_title" value="#{element["blog_title"]}" type="text"
         input name="blog_text" value="#{element["blog_text"]}" type="text"
         input type="submit" value="Update"
-        a href="/remove/#{element["id"]}"
-                    i.material-icons delete
+    form action="/#{element["id"]}/delete" method="POST"
+        button type="submit" value=""
+            i.material-icons delete
