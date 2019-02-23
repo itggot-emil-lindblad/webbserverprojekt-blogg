@@ -67,6 +67,8 @@ div.myblogposts {
     padding: 10px;  
 }
 
-article.blogpost {
-    background-color: white;
+
+div.myblogposts img {
+    max-width: 1015px;
+    max-height: 600px
 }

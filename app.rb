@@ -6,11 +6,10 @@ enable :sessions
 
 configure do
     set :securedpaths, ["/myprofile","/newpost","/edit"]
+    set :allowedfiles, [".jpg",".jpeg",".png"]
 end
 
 before do
-    p "Tjena"
-    p request.path_info
     if settings.securedpaths.include?(request.path_info)
         if session[:username] != nil
             break
@@ -83,8 +82,7 @@ end
 get('/myprofile') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    blogposts = db.execute("SELECT id, blog_title, blog_text FROM blogposts WHERE author_id = 2 ORDER BY id DESC")
-    p blogposts
+    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts WHERE author_id = 2 ORDER BY id DESC")
     slim(:myprofile, locals:{blogposts: blogposts})
 end
 
@@ -94,8 +92,17 @@ end
 
 post('/newpost') do
     db = SQLite3::Database.new('db/blog.db')
-    db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id) VALUES (?,?,?)",params["blog_title"],params["blog_text"],2)
-    redirect('/myprofile')
+    imgname = params[:img][:filename]
+    img = params[:img][:tempfile]
+    if imgname.include?(".png") or imgname.include?(".jpg")
+        File.open("public/img/#{imgname}", 'wb') do |f|
+            f.write(img.read)
+        end
+        db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],2,imgname)
+        redirect('/myprofile')
+    else
+        "Please submit a picture"
+    end
 end
 
 get('/edit/:id') do 
