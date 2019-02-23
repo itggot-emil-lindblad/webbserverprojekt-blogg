@@ -5,22 +5,20 @@ require 'bcrypt'
 enable :sessions
 
 configure do
-    set :securedpaths, ["/welcome","/tjena"]
+    set :securedpaths, ["/myprofile","/newpost","/edit"]
 end
 
-# before do
-#     p "Tjena"
-#     p request.path_info
-#     if settings.securedpaths.include?(request.path_info)
-#         if session[:username] != nil
-#             redirect(request.path_info)
-#         else
-#             halt 401, 'Error 401'
-#         end
-#     else
-#         redirect(request.path_info)
-#     end
-# end
+before do
+    p "Tjena"
+    p request.path_info
+    if settings.securedpaths.include?(request.path_info)
+        if session[:username] != nil
+            break
+        else
+            halt 401, 'Unauthorized Error 401'
+        end
+    end
+end
 
 get('/') do 
     slim(:index)
@@ -39,7 +37,7 @@ post('/login') do
     elsif checkpassword(params["password"],result[0]["Hash"]) == true
         session[:name] = result[0]["Displayname"]
         session[:username] = params["username"]
-        redirect('/')
+        redirect('/myprofile')
     else
         redirect('/denied')
     end
