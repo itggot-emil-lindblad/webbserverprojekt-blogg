@@ -20,7 +20,10 @@ before do
 end
 
 get('/') do 
-    slim(:index)
+    db = SQLite3::Database.new("db/blog.db")
+    db.results_as_hash = true
+    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts ORDER BY id DESC")
+    slim(:index, locals:{blogposts: blogposts})
 end
 
 get('/newuser') do
@@ -30,11 +33,11 @@ end
 post('/login') do
     db = SQLite3::Database.new("db/blog.db")
     db.results_as_hash = true
-    result = db.execute("SELECT Displayname, Username, Hash FROM users WHERE Username =?",params["username"])
+    result = db.execute("SELECT Id, Displayname, Username, Hash FROM users WHERE Username =?",params["username"])
     if result == []
         redirect('/denied')
     elsif checkpassword(params["password"],result[0]["Hash"]) == true
-        session[:name] = result[0]["Displayname"]
+        session[:userid] = result[0]["Id"]
         session[:username] = params["username"]
         redirect('/myprofile')
     else
@@ -82,7 +85,7 @@ end
 get('/myprofile') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts WHERE author_id = 2 ORDER BY id DESC")
+    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts WHERE author_id = ? ORDER BY id DESC",session[:userid])
     slim(:myprofile, locals:{blogposts: blogposts})
 end
 
@@ -98,7 +101,7 @@ post('/newpost') do
         File.open("public/img/#{imgname}", 'wb') do |f|
             f.write(img.read)
         end
-        db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],2,imgname)
+        db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],imgname)
         redirect('/myprofile')
     else
         "Please submit a picture"
