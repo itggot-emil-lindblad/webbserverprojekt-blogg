@@ -2,6 +2,7 @@ require 'sinatra'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
+require 'securerandom'
 enable :sessions
 
 configure do
@@ -22,7 +23,7 @@ end
 get('/') do 
     db = SQLite3::Database.new("db/blog.db")
     db.results_as_hash = true
-    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts ORDER BY id DESC")
+    blogposts = db.execute("SELECT blogposts.id, blog_title, blog_text, img_path, author_id, Displayname FROM blogposts INNER JOIN users on users.id = blogposts.author_id")
     slim(:index, locals:{blogposts: blogposts})
 end
 
@@ -98,15 +99,20 @@ post('/newpost') do
     imgname = params[:img][:filename]
     img = params[:img][:tempfile]
     if imgname.include?(".png") or imgname.include?(".jpg")
-        File.open("public/img/#{imgname}", 'wb') do |f|
+        newname = SecureRandom.hex(10) + "." + /(.*)\.(jpg|bmp|png|jpeg)$/.match(imgname)[2]
+        File.open("public/img/#{newname}", 'wb') do |f|
             f.write(img.read)
         end
-        db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],imgname)
+        db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],newname)
         redirect('/myprofile')
     else
         "Please submit a picture"
     end
 end
+
+# /\.(?:png|jpg|jpeg)$/i
+
+# /(.*)\.(jpg|bmp|png|jpeg)$/
 
 get('/edit/:id') do 
     db = SQLite3::Database.new('db/blog.db')

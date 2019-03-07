@@ -1,7 +1,7 @@
 -result.each do |element|
     form action="/edit/#{element["id"]}/update" method="POST"
         input name="blog_title" value="#{element["blog_title"]}" type="text"
-        input name="blog_text" value="#{element["blog_text"]}" type="text"
+        textarea name="blog_text" cols="30" rows="50" = element["blog_text"]
         input type="submit" value="Update"
     form action="/#{element["id"]}/delete" method="POST"
         button type="submit" value=""
