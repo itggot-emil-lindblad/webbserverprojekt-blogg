@@ -1,17 +1,27 @@
-h1 My posts
-a href="/newpost"
-    button New post
+-if session[:userid] == blogposts[0]["author_id"]
+    h1 My posts
+    a href="/newpost"
+        button New post
+    a href="/profile/#{session[:userid]}/edit"
+        button Edit profile
+-else
+    h1 = "#{blogposts[0]["Displayname"]}'s posts"
 .myblogposts
-    - blogposts.each do |element|
+    -blogposts.each do |element|
         article.blogpost
-            div.controls
-                a href="/edit/#{element["id"]}"
-                    button
-                        i.material-icons edit
-                span 
-                    form action="/#{element["id"]}/delete" method="POST"
-                        button type="submit" value=""
-                            i.material-icons delete
-            h2 = element["blog_title"]
-            img src="/img/#{element["img_path"]}"
-            p = element["blog_text"]
+            -if session[:userid] == element["author_id"]
+                div.controls
+                    a href="/edit/#{element["id"]}"
+                        button
+                            i.material-icons edit
+                    span 
+                        form action="/#{element["id"]}/delete" method="POST"
+                            button type="submit" value=""
+                                i.material-icons delete
+                h2 = element["blog_title"]
+                img src="/img/#{element["img_path"]}"
+                p = element["blog_text"]
+            -else
+                h2 = element["blog_title"]
+                img src="/img/#{element["img_path"]}"
+                p = element["blog_text"]

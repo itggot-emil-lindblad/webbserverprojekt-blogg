@@ -19,6 +19,7 @@ div.main {
 div.loggedininfo a {
     margin-right: 5px;
 }
+
 div.login {
     grid-column: 1/3;
 }
@@ -47,7 +48,6 @@ div.myblogposts {
     grid-column: span 3;
     padding: 10px;  
 }
-
 
 article.blogpost img {
     max-width: 1015px;

@@ -1,0 +1,15 @@
+-result.each do |element|
+    form action="/profile/#{element["Id"]}/update" method="POST"
+        p Displayname
+        input type="text" value="#{element["Displayname"]}" name="name"
+        p Username
+        input type="text" value="#{element["Username"]}" name="username"
+        p Email
+        input type="email" value="#{element["Email"]}" name="email"
+        p Password
+        input type="password" placeholder="New password" name="password"
+        p
+        input type="submit" value="Submit"
+
+- if session[:usernameerror] == true
+    p = "Username already exists"

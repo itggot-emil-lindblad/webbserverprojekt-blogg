@@ -9,17 +9,17 @@ html lang="en"
         title C00l blog
     body
         div.wrapper
-            - if session[:username] != nil
+            -if session[:username] != nil
                 header
                     div.loggedininfo
                         a href="/" Home
-                        a href="/myprofile" My profile
+                        a href="/profile/#{session[:userid]}" My profile
                         span Current user: #{session[:username]} 
                         span
                             form.logoutbtn action="/logout" method="post"
                                 input type="submit" value="Logout"
                     h1 C00l blog
-            - else
+            -else
                 header
                     div.notloggedin
                         a href="/" Home

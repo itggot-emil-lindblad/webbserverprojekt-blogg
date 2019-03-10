@@ -6,7 +6,7 @@ require 'securerandom'
 enable :sessions
 
 configure do
-    set :securedpaths, ["/myprofile","/newpost","/edit"]
+    set :securedpaths, ["/profile/*","/newpost","/edit/*"] #TODO fix "sub routes"
     set :allowedfiles, [".jpg",".jpeg",".png"]
 end
 
@@ -23,7 +23,7 @@ end
 get('/') do 
     db = SQLite3::Database.new("db/blog.db")
     db.results_as_hash = true
-    blogposts = db.execute("SELECT blogposts.id, blog_title, blog_text, img_path, author_id, Displayname FROM blogposts INNER JOIN users on users.id = blogposts.author_id")
+    blogposts = db.execute("SELECT blogposts.id, blog_title, blog_text, img_path, author_id, Displayname FROM blogposts INNER JOIN users on users.id = blogposts.author_id ORDER BY blogposts.id DESC")
     slim(:index, locals:{blogposts: blogposts})
 end
 
@@ -40,7 +40,7 @@ post('/login') do
     elsif checkpassword(params["password"],result[0]["Hash"]) == true
         session[:userid] = result[0]["Id"]
         session[:username] = params["username"]
-        redirect('/myprofile')
+        redirect('/')
     else
         redirect('/denied')
     end
@@ -73,7 +73,7 @@ post('/register') do
     db = SQLite3::Database.new("db/blog.db")
     hashedpassword = BCrypt::Password.create(params["password"])
     if db.execute("Select username FROM users WHERE username =?",params["username"]) != []
-		session[:usernameerror] = true
+		params[:usernameerror] = true
         redirect('/newuser')
 	else
 		db.execute("INSERT INTO users(Username, Hash, Email, Displayname, Accounttype) VALUES (?,?,?,?,?)",params["username"],hashedpassword,params["email"],params["name"],"admin")    
@@ -83,10 +83,10 @@ post('/register') do
     redirect('/')
 end
 
-get('/myprofile') do
+get('/profile/:id') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    blogposts = db.execute("SELECT id, blog_title, blog_text, img_path FROM blogposts WHERE author_id = ? ORDER BY id DESC",session[:userid])
+    blogposts = db.execute("SELECT blogposts.id, blog_title, blog_text, img_path, author_id, Displayname FROM blogposts INNER JOIN users on users.id = blogposts.author_id WHERE author_id = ? ORDER BY blogposts.id DESC",params["id"])
     slim(:myprofile, locals:{blogposts: blogposts})
 end
 
@@ -104,15 +104,12 @@ post('/newpost') do
             f.write(img.read)
         end
         db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],newname)
-        redirect('/myprofile')
+        params["id"] = session[:userid]
+        redirect('/profile/:id')
     else
         "Please submit a picture"
     end
 end
-
-# /\.(?:png|jpg|jpeg)$/i
-
-# /(.*)\.(jpg|bmp|png|jpeg)$/
 
 get('/edit/:id') do 
     db = SQLite3::Database.new('db/blog.db')
@@ -124,11 +121,38 @@ end
 post('/edit/:id/update') do 
     db = SQLite3::Database.new('db/blog.db')
     db.execute("UPDATE blogposts SET blog_title = ?,blog_text = ? WHERE id = ?",params["blog_title"],params["blog_text"],params["id"])
-    redirect('/myprofile')
+    params["id"] = session[:userid]
+    redirect('/profile/:id')
 end
 
 post('/:id/delete') do
     db = SQLite3::Database.new("db/blog.db")
     db.execute("DELETE FROM blogposts WHERE id = (?)", params["id"])
-    redirect('/myprofile')
+    id = "test"
+    redirect('/profile/#{sett}')
+end
+
+get('/profile/:id/edit') do
+    db = SQLite3::Database.new('db/blog.db')
+    db.results_as_hash = true
+    result = db.execute("SELECT Id, Displayname, Username, Email FROM users WHERE id = ?",params["id"])
+    slim(:editprofile, locals:{result: result})
+end
+
+post('/profile/:id/update') do
+    db = SQLite3::Database.new('db/blog.db')
+    if params["password"] == ""
+	    db.execute("UPDATE users set Username = ?, Email = ?, Displayname= ? WHERE id = ?",params["username"],params["email"],params["name"],params["id"])    
+    else
+        hashedpassword = BCrypt::Password.create(params["password"])
+        # if db.execute("Select username FROM users WHERE username =?",params["username"]) == params["username"] or db.execute("Select username FROM users WHERE username =?",params["username"]) != []
+        # 	session[:usernameerror] = true
+        #     redirect(back)
+        # else
+        # end
+        db.execute("UPDATE users set Username = ?, Hash = ?, Email = ?, Displayname= ? WHERE id = ?",params["username"],hashedpassword,params["email"],params["name"],params["id"])    
+    end
+    session[:name] = params["name"]
+    session[:username] = params["username"]
+    redirect('/profile/:id')
 end

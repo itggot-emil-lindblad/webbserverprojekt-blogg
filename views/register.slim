@@ -7,5 +7,5 @@ form.register action="/register" method="POST"
     input type="password" placeholder="Your password" required="required" name="password"
     input type="submit" value="Submit"
 
-- if session[:usernameerror] == true
+- if params[:usernameerror] == true
     p = "Username already exists"
