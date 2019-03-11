@@ -5,6 +5,8 @@ require 'bcrypt'
 require 'securerandom'
 enable :sessions
 #TODO fix dynamic redirects
+#arr.any
+#request
 configure do
     set :securedpaths, ["/profile/*","/newpost","/edit/*"] #TODO fix "sub routes"
     set :allowedfiles, [".jpg",".jpeg",".png"]
@@ -104,9 +106,8 @@ post('/newpost') do
             f.write(img.read)
         end
         db.execute("INSERT INTO blogposts(blog_title, blog_text, author_id, img_path) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],newname)
-        params["id"] = session[:userid]
-        redirect('/profile/:id')
-    else
+        redirect("/profile/#{session[:userid]}")
+else
         "Please submit a picture"
     end
 end
@@ -121,15 +122,14 @@ end
 post('/edit/:id/update') do 
     db = SQLite3::Database.new('db/blog.db')
     db.execute("UPDATE blogposts SET blog_title = ?,blog_text = ? WHERE id = ?",params["blog_title"],params["blog_text"],params["id"])
-    params["id"] = session[:userid]
-    redirect('/profile/:id')
+    redirect("/profile/#{session[:userid]}")
 end
 
 post('/:id/delete') do
     db = SQLite3::Database.new("db/blog.db")
     db.execute("DELETE FROM blogposts WHERE id = (?)", params["id"])
     id = "test"
-    redirect('/profile/#{sett}')
+    redirect("/profile/#{session[:userid]}")
 end
 
 get('/profile/:id/edit') do
@@ -155,5 +155,5 @@ post('/profile/:id/update') do
     end
     session[:name] = params["name"]
     session[:username] = params["username"]
-    redirect('/profile/:id')
+    redirect("/profile/#{session[:userid]}")
 end
