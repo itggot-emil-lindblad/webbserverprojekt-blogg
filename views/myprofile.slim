@@ -5,7 +5,7 @@
     a href="/profile/#{session[:userid]}/edit"
         button Edit profile
 -else
-    h1 = "#{blogposts[0]["Displayname"]}'s posts"
+    h1 = "#{blogposts[0]["Username"]}'s posts"
 .myblogposts
     -blogposts.each do |element|
         article.blogpost

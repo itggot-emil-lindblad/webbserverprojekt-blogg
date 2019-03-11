@@ -1,7 +1,5 @@
 -result.each do |element|
     form action="/profile/#{element["Id"]}/update" method="POST"
-        p Displayname
-        input type="text" value="#{element["Displayname"]}" name="name"
         p Username
         input type="text" value="#{element["Username"]}" name="username"
         p Email
