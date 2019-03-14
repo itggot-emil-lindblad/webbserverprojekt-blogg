@@ -2,7 +2,7 @@
     h1 My posts
     a href="/newpost"
         button New post
-    a href="/profile/#{session[:userid]}/edit"
+    a href="/editprofile/#{session[:userid]}"
         button Edit profile
 -else
     h1 = "#{blogposts[0]["Username"]}'s posts"
@@ -11,11 +11,11 @@
         article.blogpost
             -if session[:userid] == element["AuthorId"]
                 div.controls
-                    a href="/edit/#{element["Id"]}"
+                    a href="/editpost/#{element["Id"]}"
                         button
                             i.material-icons edit
                     span 
-                        form action="/#{element["Id"]}/delete" method="POST"
+                        form action="/editpost/#{element["Id"]}/delete" method="POST"
                             button type="submit" value=""
                                 i.material-icons delete
                 h2 = element["BlogTitle"]

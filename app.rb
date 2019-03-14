@@ -43,7 +43,7 @@ post('/login') do
     elsif checkpassword(params["password"],result[0]["Hash"]) == true
         session[:userid] = result[0]["Id"]
         session[:username] = params["username"]
-        redirect('/')
+        redirect("/profile/#{session[:userid]}")
     else
         redirect('/denied')
     end
@@ -55,10 +55,6 @@ def checkpassword(pw,dbpw)
     else
         return false
     end
-end
-
-get('/welcome') do
-        slim(:welcome)
 end
 
 get('/denied') do
@@ -113,33 +109,33 @@ else
     end
 end
 
-get('/edit/:id') do 
+get('/editpost/:id') do 
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
     result = db.execute("SELECT Id, BlogTitle, BlogText FROM blogposts WHERE Id = ?",params["id"])
     slim(:editpost, locals:{result: result})
 end
 
-post('/edit/:id/update') do 
+post('/editpost/:id/update') do 
     db = SQLite3::Database.new('db/blog.db')
     db.execute("UPDATE blogposts SET BlogTitle = ?,BlogText = ? WHERE Id = ?",params["blog_title"],params["blog_text"],params["id"])
     redirect("/profile/#{session[:userid]}")
 end
 
-post('/:id/delete') do
+post('/editpost/:id/delete') do
     db = SQLite3::Database.new("db/blog.db")
     db.execute("DELETE FROM blogposts WHERE Id = (?)", params["id"])
     redirect("/profile/#{session[:userid]}")
 end
 
-get('/profile/:id/edit') do
+get('/editprofile/:id') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
     result = db.execute("SELECT Id, Username, Email FROM users WHERE Id = ?",params["id"])
     slim(:editprofile, locals:{result: result})
 end
 
-post('/profile/:id/update') do
+post('/editprofile/:id/update') do
     db = SQLite3::Database.new('db/blog.db')
     if params["password"] == ""
 	    db.execute("UPDATE users set Username = ?, Email = ?, WHERE Id = ?",params["username"],params["email"],params["id"])    
