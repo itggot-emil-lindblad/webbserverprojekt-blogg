@@ -8,13 +8,13 @@ enable :sessions
 #arr.any
 #request
 configure do
-    set :securedpaths, ["/profile/*","/newpost","/edit"]
+    set :publicroutes, ["/","/newuser","/login","/register"]
     set :allowedfiles, [".jpg",".jpeg",".png"]
 end
 
 before do
     p request.path_info
-    if settings.securedpaths.include?(request.path_info)
+    if settings.publicroutes.any?(request.path_info) == false
         if session[:username] != nil
             break
         else
@@ -75,7 +75,7 @@ post('/register') do
 		params[:usernameerror] = true
         redirect('/newuser')
 	else
-		db.execute("INSERT INTO users(Username, Hash, Email) VALUES (?,?,?,?)",params["username"],hashedpassword,params["email"])    
+		db.execute("INSERT INTO users(Username, Hash, Email) VALUES (?,?,?)",params["username"],hashedpassword,params["email"])    
 	end
     session[:name] = params["name"]
     session[:username] = params["username"]
