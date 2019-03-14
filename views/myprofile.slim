@@ -1,4 +1,4 @@
--if session[:userid] == blogposts[0]["author_id"]
+-if session[:userid] == blogposts[0]["AuthorId"]
     h1 My posts
     a href="/newpost"
         button New post
@@ -9,19 +9,19 @@
 .myblogposts
     -blogposts.each do |element|
         article.blogpost
-            -if session[:userid] == element["author_id"]
+            -if session[:userid] == element["AuthorId"]
                 div.controls
-                    a href="/edit/#{element["id"]}"
+                    a href="/edit/#{element["Id"]}"
                         button
                             i.material-icons edit
                     span 
-                        form action="/#{element["id"]}/delete" method="POST"
+                        form action="/#{element["Id"]}/delete" method="POST"
                             button type="submit" value=""
                                 i.material-icons delete
-                h2 = element["blog_title"]
-                img src="/img/#{element["img_path"]}"
-                p = element["blog_text"]
+                h2 = element["BlogTitle"]
+                img src="/img/#{element["ImgPath"]}"
+                p = element["BlogText"]
             -else
-                h2 = element["blog_title"]
-                img src="/img/#{element["img_path"]}"
-                p = element["blog_text"]
+                h2 = element["BlogTitle"]
+                img src="/img/#{element["ImgPath"]}"
+                p = element["BlogText"]

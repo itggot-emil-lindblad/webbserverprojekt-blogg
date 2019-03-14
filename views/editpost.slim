@@ -1,8 +1,8 @@
 -result.each do |element|
-    form action="/edit/#{element["id"]}/update" method="POST"
-        input name="blog_title" value="#{element["blog_title"]}" type="text"
-        textarea name="blog_text" cols="30" rows="20" = element["blog_text"]
+    form action="/edit/#{element["Id"]}/update" method="POST"
+        input name="blog_title" value="#{element["BlogTitle"]}" type="text"
+        textarea name="blog_text" cols="30" rows="20" = element["BlogText"]
         input type="submit" value="Update"
-    form action="/#{element["id"]}/delete" method="POST"
+    form action="/#{element["Id"]}/delete" method="POST"
         button type="submit" value=""
             i.material-icons delete

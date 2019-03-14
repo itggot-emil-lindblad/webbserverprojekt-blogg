@@ -1,8 +1,8 @@
 h1 Welcome to the bl0g
 - blogposts.each do |element|
     article.blogpost
-        h2 = element["blog_title"]
-        img src="/img/#{element["img_path"]}"
-        p = element["blog_text"]
+        h2 = element["BlogTitle"]
+        img src="/img/#{element["ImgPath"]}"
+        p = element["BlogText"]
         p Posted by 
-        a href="/profile/#{element["author_id"]}" = element["Username"]
+        a href="/profile/#{element["AuthorId"]}" = element["Username"]
