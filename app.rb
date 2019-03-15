@@ -4,12 +4,10 @@ require 'slim'
 require 'bcrypt'
 require 'securerandom'
 enable :sessions
-#TODO fix dynamic redirects
-#arr.any
-#request
+
 configure do
     set :publicroutes, ["/","/newuser","/login","/register"]
-    set :allowedfiles, [".jpg",".jpeg",".png"]
+    set :allowedfiles, [".jpg",".jpeg",".png"] #TODO Better solution for allowed files
 end
 
 before do
@@ -104,7 +102,7 @@ post('/newpost') do
         end
         db.execute("INSERT INTO blogposts(BlogTitle, BlogText, AuthorId, ImgPath) VALUES (?,?,?,?)",params["blog_title"],params["blog_text"],session[:userid],newname)
         redirect("/profile/#{session[:userid]}")
-else
+    else
         "Please submit a picture"
     end
 end
@@ -128,17 +126,17 @@ post('/editpost/:id/delete') do
     redirect("/profile/#{session[:userid]}")
 end
 
-get('/editprofile/:id') do
+get('/editprofile') do
     db = SQLite3::Database.new('db/blog.db')
     db.results_as_hash = true
-    result = db.execute("SELECT Id, Username, Email FROM users WHERE Id = ?",params["id"])
+    result = db.execute("SELECT Id, Username, Email FROM users WHERE Id = ?",session[:userid])
     slim(:editprofile, locals:{result: result})
 end
 
-post('/editprofile/:id/update') do
+post('/editprofile/update') do
     db = SQLite3::Database.new('db/blog.db')
     if params["password"] == ""
-	    db.execute("UPDATE users set Username = ?, Email = ?, WHERE Id = ?",params["username"],params["email"],params["id"])    
+	    db.execute("UPDATE users set Username = ?, Email = ?, WHERE Id = ?",params["username"],params["email"],session[:userid])    
     else
         hashedpassword = BCrypt::Password.create(params["password"])
         # if db.execute("Select username FROM users WHERE username =?",params["username"]) == params["username"] or db.execute("Select username FROM users WHERE username =?",params["username"]) != []

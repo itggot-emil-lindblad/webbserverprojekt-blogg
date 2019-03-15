@@ -2,7 +2,7 @@
     h1 My posts
     a href="/newpost"
         button New post
-    a href="/editprofile/#{session[:userid]}"
+    a href="/editprofile"
         button Edit profile
 -else
     h1 = "#{blogposts[0]["Username"]}'s posts"
