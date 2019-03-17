@@ -6,7 +6,7 @@ require 'securerandom'
 enable :sessions
 
 configure do
-    set :publicroutes, ["/","/newuser","/login","/register"]
+    set :publicroutes, ["/","/newuser","/login","/register","/profile"]
     set :allowedfiles, [".jpg",".jpeg",".png"] #TODO Better solution for allowed files
 end
 
@@ -136,7 +136,7 @@ end
 post('/editprofile/update') do
     db = SQLite3::Database.new('db/blog.db')
     if params["password"] == ""
-	    db.execute("UPDATE users set Username = ?, Email = ?, WHERE Id = ?",params["username"],params["email"],session[:userid])    
+	    db.execute("UPDATE users set Username = ?, Email = ? WHERE Id = ?",params["username"],params["email"],session[:userid])    
     else
         hashedpassword = BCrypt::Password.create(params["password"])
         # if db.execute("Select username FROM users WHERE username =?",params["username"]) == params["username"] or db.execute("Select username FROM users WHERE username =?",params["username"]) != []
